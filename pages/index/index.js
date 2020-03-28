@@ -4,17 +4,6 @@ import Card from '../../palette/palette1';
 
 Page({
 
-  data: {
-    template: {},
-  },
-
-  onImgOK(e) {
-    
-    wx.saveImageToPhotosAlbum({
-      filePath: e.detail.path,
-    });
-  },
-
   chooseImage: function() {
     wx.chooseImage({
       count: 1,
@@ -29,9 +18,14 @@ Page({
             });
           }
         })
-
       },
     })
+  },
+
+  onImgOK(e) {
+    wx.saveImageToPhotosAlbum({
+      filePath: e.detail.path,
+    });
   },
 
 });
