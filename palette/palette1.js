@@ -4,7 +4,7 @@ export default class ImageExample {
     return ({
       width: imgwidth + 'px',
       height: imgheight + 'px',
-      background: '#800080',
+      background: '#fff',
       views: [{
         type: 'image',
         url: photopath,
