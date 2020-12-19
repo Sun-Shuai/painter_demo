@@ -1,2 +1,2 @@
-<canvas wx:if="{{use2D}}" type="2d" id="photo" style="{{painterStyle}};{{customStyle}}" />
-<canvas wx:else canvas-id="photo" style="{{painterStyle}};{{customStyle}}" />
+<canvas wx:if="{{use2D}}" type="2d" id="photo" style="{{photoStyle}};{{customStyle}}" />
+<canvas wx:else canvas-id="photo" style="{{photoStyle}};{{customStyle}}" />
