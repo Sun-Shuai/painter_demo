@@ -231,17 +231,19 @@ Component({
 
 
 function setStringPrototype(screenK, scale) {
-  /* eslint-disable no-extend-native */
   /**
    * 是否支持负数
    * @param {Boolean} minus 是否支持负数
    */
-  String.prototype.toPx = function toPx(minus) {
+  String.prototype.toPx = function toPx(minus, baseSize) {
+    if (this === '0') {
+      return 0
+    }
     let reg;
     if (minus) {
-      reg = /^-?[0-9]+([.]{1}[0-9]+){0,1}(rpx|px)$/g;
+      reg = /^-?[0-9]+([.]{1}[0-9]+){0,1}(rpx|px|%)$/g;
     } else {
-      reg = /^[0-9]+([.]{1}[0-9]+){0,1}(rpx|px)$/g;
+      reg = /^[0-9]+([.]{1}[0-9]+){0,1}(rpx|px|%)$/g;
     }
     const results = reg.exec(this);
     if (!this || !results) {
@@ -253,9 +255,11 @@ function setStringPrototype(screenK, scale) {
 
     let res = 0;
     if (unit === 'rpx') {
-      res = Math.round(value * screenK * (scale || 1));
+      res = Math.round(value * (screenK || 0.5) * (scale || 1));
     } else if (unit === 'px') {
       res = Math.round(value * (scale || 1));
+    } else if (unit === '%') {
+      res = Math.round(value * baseSize / 100);
     }
     return res;
   };
