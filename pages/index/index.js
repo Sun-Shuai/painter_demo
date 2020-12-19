@@ -4,7 +4,7 @@ import Card from '../../palette/palette1';
 
 Page({
 
-  chooseImage: function() {
+  chooseImage: function () {
     wx.chooseImage({
       count: 1,
       sizeType: ['compressed'],
@@ -23,6 +23,9 @@ Page({
   },
 
   onImgOK(e) {
+    this.setData({
+      image: e.detail.path
+    })
     wx.saveImageToPhotosAlbum({
       filePath: e.detail.path,
     });

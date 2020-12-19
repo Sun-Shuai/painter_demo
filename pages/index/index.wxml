@@ -1,4 +1,4 @@
 <!--index.wxml-->
-<painter customStyle='position: fixed; left: 100%;' palette="{{template}}" bind:imgOK="onImgOK" widthPixels="1000" />
-
+<painter customStyle='position: fixed; left: 100%;' palette="{{template}}" bind:imgOK="onImgOK" widthPixels="1000" use2D="{{true}}"/>
+<image src="{{image}}" style="width: 654rpx; height: 1000rpx; margin-left:40rpx;" mode="aspectFit" />
 <button bindtap="chooseImage" type="primary" plain>选择图片</button>
