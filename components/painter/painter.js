@@ -86,7 +86,7 @@ Component({
         this.setData({
           painterStyle: `width:${this.canvasWidthInPx}px;height:${this.canvasHeightInPx}px;`,
         });
-        const ctx = wx.createCanvasContext('k-canvas', this);
+        const ctx = wx.createCanvasContext('photo', this);
         const pen = new Pen(ctx, palette);
         pen.paint(() => {
           this.saveImgToLocal();
