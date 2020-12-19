@@ -19,7 +19,6 @@ export default class ImageExample {
           css: {
             right: '20rpx',
             top: '30rpx',
-            color: 'linear-gradient(-135deg, #fedcba 0%, rgba(18, 52, 86, 1) 20%, #987 80%)',
           },
         }
 
