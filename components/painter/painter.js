@@ -1,26 +1,21 @@
 import Pen from './lib/pen';
 import Downloader from './lib/downloader';
 
-const util = require('./lib/util');
-
 const downloader = new Downloader();
-
-// 最大尝试的绘制次数
 const MAX_PAINT_COUNT = 5;
+
 Component({
   canvasWidthInPx: 0,
   canvasHeightInPx: 0,
   paintCount: 0,
-  /**
-   * 组件的属性列表
-   */
+
   properties: {
     customStyle: {
       type: String,
     },
     palette: {
       type: Object,
-      observer: function(newVal, oldVal) {
+      observer: function (newVal, oldVal) {
         if (this.isNeedRefresh(newVal, oldVal)) {
           this.paintCount = 0;
           this.startPaint();
@@ -30,25 +25,13 @@ Component({
     widthPixels: {
       type: Number,
       value: 0
-    },
-    // 启用脏检查，默认 false
-    dirty: {
-      type: Boolean,
-      value: false,
-    },
+    }
   },
 
-  data: {
-    picURL: '',
-    showCanvas: true,
-    painterStyle: '',
-  },
+  data: {},
 
   methods: {
-    /**
-     * 判断一个 object 是否为 空
-     * @param {object} object
-     */
+
     isEmpty(object) {
       for (const i in object) {
         return false;
@@ -57,7 +40,7 @@ Component({
     },
 
     isNeedRefresh(newVal, oldVal) {
-      if (!newVal || this.isEmpty(newVal) || (this.data.dirty && util.equal(newVal, oldVal))) {
+      if (!newVal || this.isEmpty(newVal)) {
         return false;
       }
       return true;
@@ -83,7 +66,7 @@ Component({
       let screenK = getApp().systemInfo.screenWidth / 750;
       setStringPrototype(screenK, 1);
 
-      this.downloadImages().then((palette) => {
+      this.downloadImages(this.properties.palette).then((palette) => {
         const {
           width,
           height
@@ -95,7 +78,6 @@ Component({
         }
         this.canvasWidthInPx = width.toPx();
         if (this.properties.widthPixels) {
-          // 如果重新设置过像素宽度，则重新设置比例
           setStringPrototype(screenK, this.properties.widthPixels / this.canvasWidthInPx)
           this.canvasWidthInPx = this.properties.widthPixels
         }
@@ -112,11 +94,11 @@ Component({
       });
     },
 
-    downloadImages() {
+    downloadImages(palette) {
       return new Promise((resolve, reject) => {
         let preCount = 0;
         let completeCount = 0;
-        const paletteCopy = JSON.parse(JSON.stringify(this.properties.palette));
+        const paletteCopy = JSON.parse(JSON.stringify(palette));
         if (paletteCopy.background) {
           preCount++;
           downloader.download(paletteCopy.background).then((path) => {
@@ -136,18 +118,15 @@ Component({
           for (const view of paletteCopy.views) {
             if (view && view.type === 'image' && view.url) {
               preCount++;
-              /* eslint-disable no-loop-func */
               downloader.download(view.url).then((path) => {
                 view.url = path;
                 wx.getImageInfo({
                   src: view.url,
                   success: (res) => {
-                    // 获得一下图片信息，供后续裁减使用
                     view.sWidth = res.width;
                     view.sHeight = res.height;
                   },
                   fail: (error) => {
-                    // 如果图片坏了，则直接置空，防止坑爹的 canvas 画崩溃了
                     view.url = "";
                     console.error(`getImageInfo ${view.url} failed, ${JSON.stringify(error)}`);
                   },
@@ -177,15 +156,15 @@ Component({
       const that = this;
       setTimeout(() => {
         wx.canvasToTempFilePath({
-          canvasId: 'k-canvas',
+          canvasId: 'photo',
           destWidth: that.canvasWidthInPx,
           destHeight: that.canvasHeightInPx,
           fileType: 'jpg',
           quality: 0.8,
-          success: function(res) {
+          success: function (res) {
             that.getImageInfo(res.tempFilePath);
           },
-          fail: function(error) {
+          fail: function (error) {
             console.error(`canvasToTempFilePath failed, ${JSON.stringify(error)}`);
             that.triggerEvent('imgErr', {
               error: error
@@ -208,7 +187,6 @@ Component({
             });
             return;
           }
-          // 比例相符时才证明绘制成功，否则进行强制重绘制
           if (Math.abs((infoRes.width * that.canvasHeightInPx - that.canvasWidthInPx * infoRes.height) / (infoRes.height * that.canvasHeightInPx)) < 0.01) {
             that.triggerEvent('imgOK', {
               path: filePath
