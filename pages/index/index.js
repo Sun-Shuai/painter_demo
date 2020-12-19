@@ -1,6 +1,7 @@
 //index.js
 
-import Card from '../../palette/palette1';
+// import Card from '../../palette/singleImageExample';
+import Card from '../../palette/posterExample';
 
 Page({
 
@@ -14,7 +15,8 @@ Page({
           src: path,
           success: res => {
             this.setData({
-              template: new Card().palette(path, res.width, res.height),
+              // template: new Card().palette(path, res.width, res.height),
+              template: new Card().palette(path,'Hello world', res.width, res.height),
             });
           }
         })
